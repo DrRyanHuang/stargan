@@ -10,7 +10,7 @@ class ResidualBlock(nn.Module):
         super(ResidualBlock, self).__init__()
         self.main = nn.Sequential(
             nn.Conv2d(dim_in, dim_out, kernel_size=3, stride=1, padding=1, bias=False),
-            nn.InstanceNorm2d(dim_out, affine=True, track_running_stats=True),
+            nn.InstanceNorm2d(dim_out, affine=True, track_running_stats=True),  # `affine` 添加仿射变换参数, `track_running_stats` 记录训练过程中的均值和方差
             nn.ReLU(inplace=True),
             nn.Conv2d(dim_out, dim_out, kernel_size=3, stride=1, padding=1, bias=False),
             nn.InstanceNorm2d(dim_out, affine=True, track_running_stats=True))

@@ -13,24 +13,28 @@ This repository provides the official PyTorch implementation of the following pa
 >
 > **Abstract:** *Recent studies have shown remarkable success in image-to-image translation for two domains. However, existing approaches have limited scalability and robustness in handling more than two domains, since different models should be built independently for every pair of image domains. To address this limitation, we propose StarGAN, a novel and scalable approach that can perform image-to-image translations for multiple domains using only a single model. Such a unified model architecture of StarGAN allows simultaneous training of multiple datasets with different domains within a single network. This leads to StarGAN's superior quality of translated images compared to existing models as well as the novel capability of flexibly translating an input image to any desired target domain. We empirically demonstrate the effectiveness of our approach on a facial attribute transfer and a facial expression synthesis tasks.*
 
-## Dependencies
+## 环境依赖
 * [Python 3.5+](https://www.continuum.io/downloads)
 * [PyTorch 0.4.0+](http://pytorch.org/)
 * [TensorFlow 1.3+](https://www.tensorflow.org/) (optional for tensorboard)
 
 
-## Downloading datasets
-To download the CelebA dataset:
+## 下载数据集
+下载`CelebA`数据集:
 ```bash
-git clone https://github.com/yunjey/StarGAN.git
+git clone https://github.com/DrRyanHuang/stargan.git
 cd StarGAN/
 bash download.sh celeba
 ```
 
-To download the RaFD dataset, you must request access to the dataset from [the Radboud Faces Database website](http://www.socsci.ru.nl:8180/RaFD2/RaFD?p=main). Then, you need to create a folder structure as described [here](https://github.com/yunjey/StarGAN/blob/master/jpg/RaFD.md).
+要下载**RaFD**数据集，必须从[Radboud Faces数据库网站](http://www.socsci.ru.nl:8180/RaFD2/RaFD?p=main)请求**access**以下载该数据集。然后，您需要按照[此处](https://github.com/yunjey/StarGAN/blob/master/jpg/RaFD.md)中描述创建文件夹结构。
 
-## Training networks
+
+
+## 训练网络
 To train StarGAN on CelebA, run the training script below. See [here](https://github.com/yunjey/StarGAN/blob/master/jpg/CelebA.md) for a list of selectable attributes in the CelebA dataset. If you change the `selected_attrs` argument, you should also change the `c_dim` argument accordingly.
+
+要在`CelebA`上训练`StarGAN`，请运行以下训练脚本。 请参阅[此处]（https://github.com/yunjey/StarGAN/blob/master/jpg/CelebA.md），以获得CelebA数据集中的可选属性列表。 如果更改了“ selected_attrs”参数，则还应该相应地更改“ c_dim”参数。
 
 ```bash
 # Train StarGAN using the CelebA dataset

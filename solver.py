@@ -21,8 +21,8 @@ class Solver(object):
         self.rafd_loader = rafd_loader
 
         # Model configurations.
-        self.c_dim = config.c_dim
-        self.c2_dim = config.c2_dim
+        self.c_dim = config.c_dim    # dimension of domain labels (1st dataset)
+        self.c2_dim = config.c2_dim  # dimension of domain labels (2nd dataset)
         self.image_size = config.image_size
         self.g_conv_dim = config.g_conv_dim
         self.d_conv_dim = config.d_conv_dim
@@ -123,7 +123,7 @@ class Solver(object):
     def denorm(self, x):
         """Convert the range from [-1, 1] to [0, 1]."""
         out = (x + 1) / 2
-        return out.clamp_(0, 1)
+        return out.clamp_(0, 1) # 将张量挤在区间 `[0, 1]` 中
 
     def gradient_penalty(self, y, x):
         """Compute gradient penalty: (L2_norm(dy/dx) - 1)**2."""
@@ -242,8 +242,8 @@ class Solver(object):
 
             # Compute loss with real images.
             out_src, out_cls = self.D(x_real)
-            d_loss_real = - torch.mean(out_src)
-            d_loss_cls = self.classification_loss(out_cls, label_org, self.dataset)
+            d_loss_real = - torch.mean(out_src)                                     # shape : torch.size([])
+            d_loss_cls = self.classification_loss(out_cls, label_org, self.dataset) # shape : torch.size([])
 
             # Compute loss with fake images.
             x_fake = self.G(x_real, c_trg)
@@ -254,7 +254,7 @@ class Solver(object):
             alpha = torch.rand(x_real.size(0), 1, 1, 1).to(self.device)
             x_hat = (alpha * x_real.data + (1 - alpha) * x_fake.data).requires_grad_(True)
             out_src, _ = self.D(x_hat)
-            d_loss_gp = self.gradient_penalty(out_src, x_hat)
+            d_loss_gp = self.gradient_penalty(out_src, x_hat)                       # 梯度惩罚项数
 
             # Backward and optimize.
             d_loss = d_loss_real + d_loss_fake + self.lambda_cls * d_loss_cls + self.lambda_gp * d_loss_gp
@@ -302,7 +302,7 @@ class Solver(object):
             # Print out training information.
             if (i+1) % self.log_step == 0:
                 et = time.time() - start_time
-                et = str(datetime.timedelta(seconds=et))[:-7]
+                et = str(datetime.timedelta(seconds=et))[:-7]  # 表示成 `0:42:10` 这样的字符串
                 log = "Elapsed [{}], Iteration [{}/{}]".format(et, i+1, self.num_iters)
                 for tag, value in loss.items():
                     log += ", {}: {:.4f}".format(tag, value)
@@ -313,7 +313,10 @@ class Solver(object):
                         self.logger.scalar_summary(tag, value, i+1)
 
             # Translate fixed images for debugging.
-            if (i+1) % self.sample_step == 0:
+#            if (i+1) % self.sample_step == 0:
+            if True:
+                # `torch.no_grad()` 是一个上下文管理器
+                # 被该语句 `wrap` 起来的部分将不会 `track` 梯度。
                 with torch.no_grad():
                     x_fake_list = [x_fixed]
                     for c_fixed in c_fixed_list:

@@ -11,14 +11,18 @@ class CelebA(data.Dataset):
     """Dataset class for the CelebA dataset."""
 
     def __init__(self, image_dir, attr_path, selected_attrs, transform, mode):
+        
         """Initialize and preprocess the CelebA dataset."""
+        
         self.image_dir = image_dir
         self.attr_path = attr_path
         self.selected_attrs = selected_attrs
         self.transform = transform
         self.mode = mode
+        
         self.train_dataset = []
         self.test_dataset = []
+        
         self.attr2idx = {}
         self.idx2attr = {}
         self.preprocess()
@@ -29,16 +33,24 @@ class CelebA(data.Dataset):
             self.num_images = len(self.test_dataset)
 
     def preprocess(self):
+        
         """Preprocess the CelebA attribute file."""
-        lines = [line.rstrip() for line in open(self.attr_path, 'r')]
+        # 预处理, 将数据及分割
+        # 将变量 `self.train_dataset` 和 `self.test_dataset` 填充
+        # 读取标注文件内容
+        with open(self.attr_path, 'r') as f_attr:
+            lines = [line.rstrip() for line in f_attr]
+        # 获得所有的标签
         all_attr_names = lines[1].split()
+        
         for i, attr_name in enumerate(all_attr_names):
             self.attr2idx[attr_name] = i
             self.idx2attr[i] = attr_name
-
+        
         lines = lines[2:]
         random.seed(1234)
         random.shuffle(lines)
+        
         for i, line in enumerate(lines):
             split = line.split()
             filename = split[0]
@@ -70,6 +82,7 @@ class CelebA(data.Dataset):
 
 def get_loader(image_dir, attr_path, selected_attrs, crop_size=178, image_size=128, 
                batch_size=16, dataset='CelebA', mode='train', num_workers=1):
+    
     """Build and return a data loader."""
     transform = []
     if mode == 'train':
